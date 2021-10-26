@@ -32,9 +32,13 @@ b.	nominal
 
 # Short Answer
 
-6.	(3 pt) In your own words, distinguish between 1 and 2 sample T tests. NOT DONE
+6.	(3 pt) In your own words, distinguish between 1 and 2 sample T tests. DONE
 
-7.	(3 pt) In your own words, distinguish between parametric and non-parametric T tests NOT DONE
+In a 1 sample T test we are comparing a single sample mean to a population mean and we want to know the probability that the sample mean was pulled from the population. In a 2 sample T test we are comparing two sample means and we want to know the probability that these two sample means come from the same parent population.
+
+7.	(3 pt) In your own words, distinguish between parametric and non-parametric T tests DONE
+
+In a parametric T test there are a lot of assumptions that the data needs to satisfy, but if the data satisfies these assumptions then we have a much more powerful statistical tool to use on our data. In a non parametric T test we have an experiment that cannot meet the assumptions needed to run a parametric test. Instead of just throwing the data away we can use non-parametric tests by ranking the data and comparing the distribution of the ranks between the samples. 
 
 # Longer work
 
@@ -150,12 +154,21 @@ dataTtest
 ```
 d.	(2 pt) Explain in words the hypothesis that is evaluated by the correct t-test. Explain why this test is the most appropriate for the experiment that the two of you designed. NOT DONE
 
-A two sample paired t test  evaluates whether  . This is important because they are being collected from teh same 
+A two sample paired t test  evaluates whether there is an actual difference between neutrophils being treated with immuno-NAD and neutrophils being treated with the vehicle. 
 
-e.	(2 pt) Using R, show TWO graphs of the data: A) one that includes summary statistics and B) a second graph that does not include the mean and SEM for each group, that would convey more accurately to the post-doc what is actually being tested by the experiment and the correct t-test. NOT DONE
+This test is the most appropriate because the mice are being used from the same population.
+
+e.	(2 pt) Using R, show TWO graphs of the data: A) one that includes summary statistics and B) a second graph that does not include the mean and SEM for each group, that would convey more accurately to the post-doc what is actually being tested by the experiment and the correct t-test. 
+
 
 ```{r}
+experiData = data.frame(experiLumi=c(36, 108, 77, 49, 58, 153, 112, 66), condition = factor (c(rep("Vehicle",4), rep("Immuno-NAD", 4)),levels = c("Vehicle", "Immuno-NAD")), id=c(rep(1:4,2)))
 
+boxplot(experiData$experiLumi~experiData$condition, names = c("Vehicle", "Immuno-NAD"), ylab = "Chemiluminescence", xlab = "Condition", main= "Summary Statistics")
+
+stripchart(experiData$experiLumi~experiData$condition, pch = 19, add = TRUE, vertical = TRUE)
+                        
+interaction.plot(response = experiData$experiLumi, x.factor = experiData$condition, trace.factor = experiData$id, legend=FALSE, lty=1, xlab= "Condition", ylab= "Chemiluminescence", type="b", main = "Accurate Graph", pch=16, las=1, cex=1.5, cex.lab=1.5, cex.axis=1.3)
 ```
 
 Short Answer (12 pts)

@@ -1,0 +1,162 @@
+---
+title: "Homework 1"
+output: html_notebook
+---
+
+# 2021 QCB Biostats Homework 1
+Due October 26th th by the start of class
+
+# Honor Code Statement:
+By submitting this work, I pledge on my honor that I have neither given nor received unauthorized aid on this examination, and it has been completed in accordance with the requirements of the course as specified by the instructor.
+
+# Work Submission Instructions:
+For your homework assignment, please copy the file(s) into your own directory in `../Users/YourName/Homework1_YourName.Rmd` (leave the original within this directory). Modify the code within RStudio to answer the questions, commit locally, and push to GitHub.
+
+# Multiple Choice (5 pt each; feel free to delete all but the right answer)
+
+1.	Suppose you are testing the idea that people with brown eyes are taller than people with blue eyes. Although we rarely use one-tailed hypotheses, which would be an appropriate one-tailed alternative hypothesis? DONE
+b.	The mean of the sample of brown-eyed people will be greater than the mean of the sample of blue-eyed people. 
+
+2.	A Type I error occurs when the researcher: DONE
+a.	rejects the null hypothesis when it is true. 
+
+3.	If, prior to conducting an experiment, you choose α = .10, rather than α = .05, the probability of making a Type I error: DONE
+b.	gets larger. 
+
+4.	When the null hypothesis is actually true:  DONE
+c. significant results can be attributed to chance factors
+
+5.	Which of the following variables provides the least information and, thus, has the lowest power. DONE
+b.	nominal
+
+
+# Short Answer
+
+6.	(3 pt) In your own words, distinguish between 1 and 2 sample T tests. NOT DONE
+
+7.	(3 pt) In your own words, distinguish between parametric and non-parametric T tests NOT DONE
+
+# Longer work
+
+8.	(11 pt) You are using GFP-Cyt C (a marker of cell death) to determine how a drug impacts cell death. You can do this measurement a few ways: 1) you can calculate the number of cells is a field of view that are GFP+ and the number of cells that are GFP- or 2) you can use a program to calculate the fluorescence intensity (FIU: fluorescence intensity units) of individual cells in a field of view.
+
+a.	(3 pt) These two measurement give you different types of data. What are these types of data and which one gives you more information? DONE
+
+Categorical (consider discrete) & Continuous. Continuous gives you more information.
+
+b.	(4 pt) You measure the FIU of several cells before applying the drug to the cells to get baseline measurements and get the following measurements: 78, 63, 145, 94, 48, 56, 52, 84, 54. Are either the minimum or maximum values a statistical outlier (show your math using `mean()` and `sd()` in R: state the mean and S.D., show the T statistic (you write the formula). The Critical Value is 2.21. What is the statistical result of your calculation; you can confirm with R also)? DONE
+
+145 is an outlier. Mean=74.89 S.D.=30.73. Since the tstatMax is greater than the critical value we can say that 145 is an outlier. But the tstatMin is less than the critical value so we can say that 48 is not an outlier.
+
+```{r}
+install.packages("outliers") #installation of outliers package
+library(outliers) #call to the outliers package
+fiuSample=c(78, 63, 145, 94, 48, 56, 52, 84, 54) #storing the FIU measurements in an array
+meanFiuSample=mean(fiuSample) #finding the mean of all the values of the FIU measurements
+meanFiuSample #printing mean of the FIU measurements
+sdFiuSample=sd(fiuSample) #finding the standard deviation of the FIU measurements
+max(fiuSample) #finding the max of the FIU measurements
+min(fiuSample) #finding the minimum of the FIU measurements
+grubbs.test(fiuSample) #running a Grubbs test 145 to test for outlier
+grubbs.test(fiuSample, opposite=TRUE) #running a Grubbs test 48 to test for outlier
+tstatMax= (145-meanFiuSample)/sdFiuSample #assigning the tstatistic of 145 to a variable
+tstatMax #printing the tstatistic of 145
+tstatMin=(48-meanFiuSample)/sdFiuSample #assigning the tstatistic of 48 to a variable
+tstatMin #printing the tstatistic of 48
+```
+c.	(4 pt) What do you think should be done with any outliers identified if you felt there was a problem with data collection? DONE
+
+I think the experiment should be repeated. If the experiment cannot be repeated and I truly felt it was a problem with data collection then I would omit the outlier and make sure to report the outlier.
+
+9.	(4 pt) A colleague of yours is preparing figures for a manuscript. Because your colleague never took a Biostats course, he wants your advice on how to best display his data. He is trying to compare the levels of glucose in a WT mouse (N=6) compared to a diabetic mouse (N=6) and generalize this to make conclusions about glucose levels in diabetics. 
+He has graphed means ± S.D. using R What advice would you give him about data set up, graphing, and the statistical test he should do? DONE
+
+Since the N is a relatively low number I would include the data points in the graph. I would change the axes to proper names instead of the R notation. I would reorder the WT data and the diabetic data so that the diabetic information on the graph would be on the left and the wild type would be on the right. 
+
+```{r}
+mouse <- data.frame(glucose = c(54, 67, 45, 86, 32, 36, 250, 231, 200, 276, 287, 221), genotype = c(rep("WT", 6), rep("Diabetic", 6)))
+boxplot(mouse$glucose ~ mouse$genotype) 
+```
+
+
+10.	(10 pt) Mean fasting blood glucose concentration (FBGC) in normal humans is 80 mg/dl with a standard deviation of 8 mg/dl. Assume that FBGC has been measured an infinite number of times and that the concentration of blood glucose follows a normal distribution. 
+
+a.	(4 pt) Modify the code below to sketch the distribution of FBGC. The Y axis should be labeled “units of probability”. DONE
+
+```{r}
+x <- seq(50, 110, 0.1) # keep as is
+
+# Modify this
+plot(x, dnorm(x, mean = 80, sd = 8), type = "l",
+     ylab = "units of probability", lwd = 2, col = "red") 
+```
+
+b.	(3 pt) John has a family history of diabetes. At his last physical exam his FBGC was 104 mg/dl. How many standard deviations from the mean is John’s FBGC? Use `pnorm()` below and show your code. Add a line at this FBGC by modifying this code DONE
+
+John's FBGC is 3 standard deviations from the mean.
+
+```{r}
+meanFBGC=80 #assigning the mean to a variable
+observedFBGC=104 #assigning John's FBGC to a variable 
+sdFBGC=8 #assigning the standard devation to a variable
+z=(observedFBGC-meanFBGC)/sdFBGC #formula to find the z score
+z #printing out the contents of z
+plot(x, dnorm(x, mean = 80, sd = 8), type = "l", #plotting the density function
+     ylab = "", lwd = 2, col = "red")
+abline(v=104) #plotting a line at 104 to visualize where John's FBGC is compared to the rest of the FBGC's
+```
+
+c.	(3 pt) Copying and modifying the above, in normal humans, what is the probability of observing a FBGC ≥ 104 mg/dl? DONE
+
+The probability of observing a FBGC ≥ 104 mg/dl is about 0.13%
+
+```{r}
+pnorm(104, mean = 80, sd = 8, lower.tail=FALSE) #we are looking at the probability of FBGC being greater than 104, so we want everything to the right of the line at 104.
+
+```
+
+
+11.	 (15 pt) Rachel’s laboratory has developed a synthetic immunostimulant drug (Immu-NAD) that he believes will restore NADPH activity in mice neutrophils with mutant NADPH oxidase assembly. Rahcel has assigned this project to Ross, his new post-doc who has no training in statistics. Together they design the following experiment to test the hypothesis: Blood is harvested from four mice, and the neutrophils separated. Two aliquots from the neutrophils of each mouse are transferred to individual culture wells and grown. One of these aliquots is treated with vehicle solution, and one is treated with Immu-NAD. NADPH oxidase activity is measured using a chemiluminescence assay. 
+A week later, Ross brings Rachel the results. The data from this experiment are shown below peak luminescence 
+Mouse # 	1	2	3	4
+Vehicle	36	108	77	49
+Immuno-NAD	58	153	112	66
+ Ross has plotted the data as a bar graph depicting the mean and standard error of the mean (SEM) of each group. He tells Rachel he performed a "t-test" for statistical analysis. Because his statistical analysis did not result in a p-value < .05, his conclusion is that "the experiment didn't work, the means are close together, and there was a lot of overlap in the data. We should probably give up on this project." 
+ 
+a.	(2 pt) Name the incorrect t-test the post-doc likely used for his analysis. Perform the analysis in prism and show a copy of your results. DONE
+
+two sample unpaired t-test
+
+```{r}
+experiData = data.frame(vehicle=c(36, 108, 77, 49), immuno=c(58, 153, 112, 66))
+dataTtest = t.test(experiData$immuno, experiData$vehicle, paired=FALSE)
+dataTtest
+
+```
+b.	(2 pt) Explain in words the hypothesis that is evaluated by the post-doc's choice of t-test. Include statistical notation denoting the null and alternative hypotheses. DONE
+
+HO: mean of Immuno NADH  = mean of vehicle
+HA: mean of Immuno NADH ≠ mean of vehicle
+Since the p-value is 0.3206  we fail to reject the null hypothesis.
+
+c.	(2 pt) What is the name of the appropriate t-test to use. Perform the analysis and show a copy of your results. DONE
+
+two sample paired t-test
+
+```{r}
+experiData = data.frame(vehicle=c(36, 108, 77, 49), immuno=c(58, 153, 112, 66))
+dataTtest = t.test(experiData$immuno, experiData$vehicle, paired=TRUE)
+dataTtest
+```
+d.	(2 pt) Explain in words the hypothesis that is evaluated by the correct t-test. Explain why this test is the most appropriate for the experiment that the two of you designed. NOT DONE
+
+A two sample paired t test  evaluates whether  . This is important because they are being collected from teh same 
+
+e.	(2 pt) Using R, show TWO graphs of the data: A) one that includes summary statistics and B) a second graph that does not include the mean and SEM for each group, that would convey more accurately to the post-doc what is actually being tested by the experiment and the correct t-test. NOT DONE
+
+```{r}
+
+```
+
+Short Answer (12 pts)
+12.	(12 pts) In the biostats folder, there is an article to read (HW 1 essay). Summarize the take home message in this article in 4-5 sentences. NOT DONE
